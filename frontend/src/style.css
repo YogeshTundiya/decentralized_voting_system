@@ -27,7 +27,7 @@ html {
 }
 
 body {
-    background-color: var(--bg-base);
+    background-color: transparent;
     color: var(--text-primary);
     font-family: var(--font-sans);
     overflow-x: hidden;
@@ -46,6 +46,7 @@ body {
     z-index: -1;
     pointer-events: none;
 }
+
 
 /* Glassmorphism Utilities */
 .glass-panel {
