@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETH.VOTE | Immutable Democracy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+    <div class="bg-atmosphere"></div>
+
+    <nav class="nav-container">
+        <a href="#" class="nav-brand">ETH.VOTE</a>
+        <div class="nav-links">
+            <a href="#philosophy" class="nav-item">Philosophy</a>
+            <a href="#technology" class="nav-item">Technology</a>
+            <button id="connectWallet" class="btn btn-primary">Connect Wallet</button>
+        </div>
+    </nav>
+
+    <main data-scroll-container>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1 class="heading-xl reveal-text">Secure.<br>Transparent.<br>Immutable.</h1>
+                <p class="text-lead hero-subtext">The next generation of voting, built on Ethereum. Every ballot is a block, every count is a consensus.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="document.getElementById('authModal').classList.add('active')">Get Started</button>
+                    <a href="#technology" class="btn-text">How it works →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stat-item glass-panel">
+                <span class="stat-num">0%</span>
+                <span class="stat-label">Fraud Rate</span>
+            </div>
+            <div class="stat-item glass-panel">
+                <span class="stat-num">100%</span>
+                <span class="stat-label">On-Chain Transparency</span>
+            </div>
+            <div class="stat-item glass-panel">
+                <span class="stat-num">∞</span>
+                <span class="stat-label">Trustless Consensus</span>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="technology" class="info-section">
+            <div class="section-header">
+                <h2 class="heading-lg">The Protocol</h2>
+                <p>Designed to be untamperable and private.</p>
+            </div>
+            <div class="info-grid">
+                <div class="info-card glass-panel">
+                    <div class="icon">01</div>
+                    <h3>Biometric Auth</h3>
+                    <p>Secure login tied to your digital identity via the backend portal.</p>
+                </div>
+                <div class="info-card glass-panel">
+                    <div class="icon">02</div>
+                    <h3>Crypto Signature</h3>
+                    <p>Each vote is cryptographically signed and verified by the Smart Contract.</p>
+                </div>
+                <div class="info-card glass-panel">
+                    <div class="icon">03</div>
+                    <h3>Immutable Ledger</h3>
+                    <p>Once cast, your vote is etched into the Ethereum blockchain forever.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voter Portal (Hidden until Auth) -->
+        <section id="voterPortal" class="info-section hidden">
+            <div class="section-header">
+                <h2 class="heading-lg">Cast Your Ballot</h2>
+                <p>Select your candidate and confirm on-chain.</p>
+            </div>
+            <div id="candidatesList" class="candidates-grid">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 ETH.VOTE Protocol. Decentralized Democracy.</p>
+        </footer>
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2 id="modalTitle">Voter Access</h2>
+                <button id="closeModal" class="close-btn">&times;</button>
+            </div>
+            <form id="authForm">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="email" name="email" id="email" placeholder="Email" style="display: none;">
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%;">Access Portal</button>
+            </form>
+            <p id="toggleAuth" class="toggle-text">Don't have an account? <span>Register</span></p>
+        </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>

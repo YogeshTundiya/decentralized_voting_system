@@ -1,0 +1,22 @@
+# Node
+node_modules/
+dist/
+.env
+.DS_Store
+
+# Python
+venv/
+backend/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+backend/voting.db
+
+# Blockchain
+blockchain/artifacts/
+blockchain/cache/
+blockchain/typechain-types/
+
+# IDEs
+.vscode/
+.idea/

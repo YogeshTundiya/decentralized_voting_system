@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | ETH.VOTE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body class="admin-body">
+    <div class="bg-atmosphere"></div>
+
+    <nav class="nav-container">
+        <div class="nav-brand">ADMIN.CENTER</div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">View Site</a>
+            <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+        </div>
+    </nav>
+
+    <main class="admin-container">
+        <header class="admin-header">
+            <h1 class="heading-lg">Election Management</h1>
+            <p>Control the decentralized ledger and candidate registry.</p>
+        </header>
+
+        <div class="admin-grid">
+            <!-- Add Candidate Section -->
+            <section class="admin-card glass-panel" style="padding: 40px; justify-content: flex-start;">
+                <h2>Register Candidate</h2>
+                <form id="addCandidateForm" style="margin-top: 16px;">
+                    <input type="text" id="candidateName" placeholder="Candidate Name" required>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Add to Ledger</button>
+                </form>
+            </section>
+
+            <!-- Election Controls -->
+            <section class="admin-card glass-panel" style="padding: 40px; justify-content: flex-start;">
+                <h2>Election Status</h2>
+                <div class="status-toggle" style="margin-top: 16px;">
+                    <span id="currentStatus" class="status-pill status-closed">Closed</span>
+                    <button id="toggleElection" class="btn btn-secondary">Open Election</button>
+                </div>
+            </section>
+
+            <!-- Candidates List -->
+            <section class="admin-card glass-panel full-width" style="padding: 40px;">
+                <h2>Current Candidates</h2>
+                <div class="table-container" style="margin-top: 24px;">
+                    <table id="adminCandidatesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Votes</th>
+                                <th>On-Chain Hash</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCandidatesList">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="./src/admin.js"></script>
+</body>
+</html>
