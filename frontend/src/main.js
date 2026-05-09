@@ -2,6 +2,10 @@ import { ethers } from 'ethers';
 import gsap from 'gsap';
 import Lenis from 'lenis';
 
+// IMPORT AND INITIALIZE OUR NEW 3D BACKGROUND
+import { initThree } from './three-scene.js';
+initThree('#webgl-canvas');
+
 // --- Initialization ---
 const lenis = new Lenis();
 function raf(time) {
@@ -192,5 +196,3 @@ window.castVote = async (candidateId) => {
 if (localStorage.getItem('token')) {
     connectBtn.innerText = 'Connected Portal';
 }
-
-

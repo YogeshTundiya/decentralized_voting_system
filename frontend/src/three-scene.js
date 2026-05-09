@@ -8,15 +8,13 @@ export function initThree(canvasId) {
         antialias: true
     });
     
-    // TELL THREE.JS TO PAINT THE DARK BACKGROUND
-    renderer.setClearColor(new THREE.Color('#050505')); 
-    
+    // Explicitly set dark background so it renders
+    renderer.setClearColor(new THREE.Color('#000000'));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x050505, 0.02); // Matched to background color, slightly thinner
-
+    scene.fog = new THREE.FogExp2(0x000000, 0.04); 
 
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 14;
@@ -36,8 +34,8 @@ export function initThree(canvasId) {
         const isFirstLink = i < particleCount / 2;
         const u = Math.random() * Math.PI * 2;
         const v = Math.random() * Math.PI * 2;
-        const R = 3; // Link major radius
-        const r = 0.8 + Math.random() * 0.6; // Link thickness
+        const R = 3; 
+        const r = 0.8 + Math.random() * 0.6; 
         
         let cx = (R + r * Math.cos(v)) * Math.cos(u);
         let cy = (R + r * Math.cos(v)) * Math.sin(u);
@@ -45,34 +43,33 @@ export function initThree(canvasId) {
 
         if (!isFirstLink) {
             cx += R; 
-            // Swap axes to interlock the second ring
             let temp = cy; cy = cz; cz = temp; 
         }
-        cx -= R / 2; // Center the whole chain
+        cx -= R / 2; 
         
         chainPositions[i3] = cx;
         chainPositions[i3 + 1] = cy;
         chainPositions[i3 + 2] = cz;
 
         // 2. Wall Object (Curved Security Shield)
-        const wu = (Math.random() - 0.5) * Math.PI * 0.9; // Curve width
-        const wv = (Math.random() - 0.5) * 12; // Wall height
-        const wR = 10; // Curve radius
+        const wu = (Math.random() - 0.5) * Math.PI * 0.9;
+        const wv = (Math.random() - 0.5) * 12;
+        const wR = 10;
         
         const wx = Math.sin(wu) * wR;
         const wy = wv;
-        const wz = Math.cos(wu) * wR - 5; // Push it back a bit
+        const wz = Math.cos(wu) * wR - 5; 
 
         wallPositions[i3] = wx;
         wallPositions[i3 + 1] = wy;
         wallPositions[i3 + 2] = wz;
 
-        // Initialize positions
+        // Init positions
         positions[i3] = cx;
         positions[i3 + 1] = cy;
         positions[i3 + 2] = cz;
 
-        // Random offsets for cinematic floating movement
+        // Floating organic effect
         randomOffsets[i3] = Math.random() * Math.PI * 2;
         randomOffsets[i3+1] = Math.random() * Math.PI * 2;
         randomOffsets[i3+2] = Math.random() * Math.PI * 2;
@@ -87,13 +84,12 @@ export function initThree(canvasId) {
     geometry.setAttribute('aRandomOffset', new THREE.BufferAttribute(randomOffsets, 3));
     geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
 
-    // Custom Shader for Morphing and Soft Particles
     const material = new THREE.ShaderMaterial({
         uniforms: {
             uTime: { value: 0 },
-            uProgress: { value: 0 }, // 0 = Chain, 1 = Wall
+            uProgress: { value: 0 },
             uColor1: { value: new THREE.Color(0xffffff) },
-            uColor2: { value: new THREE.Color(0x00D8FF) } // Cyan/Blue for the wall
+            uColor2: { value: new THREE.Color(0x00D8FF) }
         },
         vertexShader: `
             uniform float uTime;
@@ -108,21 +104,16 @@ export function initThree(canvasId) {
             
             void main() {
                 vProgress = uProgress;
-                
-                // Morphing positions
                 vec3 targetPos = mix(aChainPos, aWallPos, uProgress);
                 
-                // Floating organic effect
                 float floatX = sin(uTime * 0.4 + aRandomOffset.x) * 0.6;
                 float floatY = cos(uTime * 0.3 + aRandomOffset.y) * 0.6;
                 float floatZ = sin(uTime * 0.5 + aRandomOffset.z) * 0.6;
                 
                 vec3 finalPos = targetPos + vec3(floatX, floatY, floatZ);
-                
                 vec4 mvPosition = modelViewMatrix * vec4(finalPos, 1.0);
                 gl_Position = projectionMatrix * mvPosition;
                 
-                // Scale particles based on distance
                 gl_PointSize = (aSize * 6.0 + 1.0) * (20.0 / -mvPosition.z);
                 vSize = aSize;
             }
@@ -134,13 +125,10 @@ export function initThree(canvasId) {
             varying float vProgress;
             
             void main() {
-                // Create soft circular particles
                 float dist = length(gl_PointCoord - vec2(0.5));
                 if (dist > 0.5) discard;
                 
                 float alpha = (0.5 - dist) * 2.0 * (vSize * 0.6 + 0.1);
-                
-                // Blend colors based on morph progress
                 vec3 color = mix(uColor1, uColor2, vProgress);
                 
                 gl_FragColor = vec4(color, alpha);
@@ -154,7 +142,7 @@ export function initThree(canvasId) {
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
 
-    // --- Background Ambient Atmosphere Particles ---
+    // --- Ambient Atmosphere ---
     const atmosGeo = new THREE.BufferGeometry();
     const atmosCount = 600;
     const atmosPos = new Float32Array(atmosCount * 3);
@@ -182,10 +170,8 @@ export function initThree(canvasId) {
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // Scroll Listener for Morphing
     window.addEventListener('scroll', () => {
         const scrollTop = window.scrollY;
-        // Map 0 -> 800px scroll to 0 -> 1 progress
         let progress = Math.min(Math.max(scrollTop / 800, 0), 1);
         
         gsap.to(material.uniforms.uProgress, {
@@ -195,21 +181,16 @@ export function initThree(canvasId) {
         });
     });
 
-    // --- Animation Loop ---
     const clock = new THREE.Clock();
 
     const animate = () => {
         const elapsedTime = clock.getElapsedTime();
         material.uniforms.uTime.value = elapsedTime;
 
-        // Subtle parallax movement based on mouse
         particles.rotation.y += (mouseX * 0.2 - particles.rotation.y) * 0.05;
         particles.rotation.x += (-mouseY * 0.2 - particles.rotation.x) * 0.05;
-        
-        // Continuous slow rotation
         particles.rotation.y += 0.0005;
 
-        // Rotate ambient atmosphere slowly
         atmos.rotation.y = elapsedTime * 0.02;
         atmos.rotation.x = elapsedTime * 0.01;
 
