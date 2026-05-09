@@ -21,13 +21,13 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html {
-    scroll-behavior: initial;
-    background-color: var(--bg-base);
+html, body {
+    /* FORCE TRANSPARENCY SO THE CANVAS SHOWS THROUGH */
+    background-color: transparent !important; 
+    background: transparent !important;
 }
 
 body {
-    background-color: transparent;
     color: var(--text-primary);
     font-family: var(--font-sans);
     overflow-x: hidden;
@@ -43,9 +43,11 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1;
+    z-index: -999; /* Pushed to the absolute back */
     pointer-events: none;
+    background: var(--bg-base); /* Fallback color while WebGL loads */
 }
+
 
 
 /* Glassmorphism Utilities */

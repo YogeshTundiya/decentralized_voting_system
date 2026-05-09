@@ -5,14 +5,18 @@ export function initThree(canvasId) {
     const canvas = document.querySelector(canvasId);
     const renderer = new THREE.WebGLRenderer({
         canvas,
-        antialias: true,
-        alpha: true
+        antialias: true
     });
+    
+    // TELL THREE.JS TO PAINT THE DARK BACKGROUND
+    renderer.setClearColor(new THREE.Color('#050505')); 
+    
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.04); // Cinematic depth
+    scene.fog = new THREE.FogExp2(0x050505, 0.02); // Matched to background color, slightly thinner
+
 
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 14;
