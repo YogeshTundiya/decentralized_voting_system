@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./src/style.css">
 </head>
 <body>
-    <div class="bg-atmosphere"></div>
+    <canvas id="webgl-canvas"></canvas>
 
     <nav class="nav-container">
         <a href="#" class="nav-brand">ETH.VOTE</a>
@@ -22,7 +22,6 @@
     </nav>
 
     <main data-scroll-container>
-        <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-content">
                 <h1 class="heading-xl reveal-text">Secure.<br>Transparent.<br>Immutable.</h1>
@@ -34,7 +33,6 @@
             </div>
         </section>
 
-        <!-- Stats Section -->
         <section class="stats">
             <div class="stat-item glass-panel">
                 <span class="stat-num">0%</span>
@@ -50,7 +48,6 @@
             </div>
         </section>
 
-        <!-- How It Works -->
         <section id="technology" class="info-section">
             <div class="section-header">
                 <h2 class="heading-lg">The Protocol</h2>
@@ -75,15 +72,13 @@
             </div>
         </section>
 
-        <!-- Voter Portal (Hidden until Auth) -->
         <section id="voterPortal" class="info-section hidden">
             <div class="section-header">
                 <h2 class="heading-lg">Cast Your Ballot</h2>
                 <p>Select your candidate and confirm on-chain.</p>
             </div>
             <div id="candidatesList" class="candidates-grid">
-                <!-- Dynamic Content -->
-            </div>
+                </div>
         </section>
 
         <footer>
@@ -91,7 +86,6 @@
         </footer>
     </main>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="modal-overlay">
         <div class="modal glass-panel">
             <div class="modal-header">

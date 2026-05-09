@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 export function initThree(canvasId) {
     const canvas = document.querySelector(canvasId);
@@ -11,61 +12,203 @@ export function initThree(canvasId) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    scene.fog = new THREE.FogExp2(0x000000, 0.04); // Cinematic depth
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 14;
 
-    const pointLight = new THREE.PointLight(0x007AFF, 2);
-    pointLight.position.set(2, 3, 4);
-    scene.add(pointLight);
+    // --- Particle System Generation ---
+    const particleCount = 6000;
+    const positions = new Float32Array(particleCount * 3);
+    const chainPositions = new Float32Array(particleCount * 3);
+    const wallPositions = new Float32Array(particleCount * 3);
+    const randomOffsets = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
 
-    // Objects
-    // Main Cage
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
-    const material = new THREE.MeshStandardMaterial({
-        color: 0x3C3C3D,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.3
-    });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 3;
+        
+        // 1. Chain Object (Interlocking Rings)
+        const isFirstLink = i < particleCount / 2;
+        const u = Math.random() * Math.PI * 2;
+        const v = Math.random() * Math.PI * 2;
+        const R = 3; // Link major radius
+        const r = 0.8 + Math.random() * 0.6; // Link thickness
+        
+        let cx = (R + r * Math.cos(v)) * Math.cos(u);
+        let cy = (R + r * Math.cos(v)) * Math.sin(u);
+        let cz = r * Math.sin(v);
 
-    // Glowing Core
-    const coreGeom = new THREE.IcosahedronGeometry(0.8, 1);
-    const coreMat = new THREE.MeshStandardMaterial({
-        color: 0x007AFF,
-        emissive: 0x007AFF,
-        emissiveIntensity: 2,
-        wireframe: true
-    });
-    const core = new THREE.Mesh(coreGeom, coreMat);
-    scene.add(core);
+        if (!isFirstLink) {
+            cx += R; 
+            // Swap axes to interlock the second ring
+            let temp = cy; cy = cz; cz = temp; 
+        }
+        cx -= R / 2; // Center the whole chain
+        
+        chainPositions[i3] = cx;
+        chainPositions[i3 + 1] = cy;
+        chainPositions[i3 + 2] = cz;
 
-    // Particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const count = 500;
-    const positions = new Float32Array(count * 3);
-    for(let i = 0; i < count * 3; i++) {
-        positions[i] = (Math.random() - 0.5) * 10;
+        // 2. Wall Object (Curved Security Shield)
+        const wu = (Math.random() - 0.5) * Math.PI * 0.9; // Curve width
+        const wv = (Math.random() - 0.5) * 12; // Wall height
+        const wR = 10; // Curve radius
+        
+        const wx = Math.sin(wu) * wR;
+        const wy = wv;
+        const wz = Math.cos(wu) * wR - 5; // Push it back a bit
+
+        wallPositions[i3] = wx;
+        wallPositions[i3 + 1] = wy;
+        wallPositions[i3 + 2] = wz;
+
+        // Initialize positions
+        positions[i3] = cx;
+        positions[i3 + 1] = cy;
+        positions[i3 + 2] = cz;
+
+        // Random offsets for cinematic floating movement
+        randomOffsets[i3] = Math.random() * Math.PI * 2;
+        randomOffsets[i3+1] = Math.random() * Math.PI * 2;
+        randomOffsets[i3+2] = Math.random() * Math.PI * 2;
+
+        sizes[i] = Math.random();
     }
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.02,
-        color: 0xffffff
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('aChainPos', new THREE.BufferAttribute(chainPositions, 3));
+    geometry.setAttribute('aWallPos', new THREE.BufferAttribute(wallPositions, 3));
+    geometry.setAttribute('aRandomOffset', new THREE.BufferAttribute(randomOffsets, 3));
+    geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+
+    // Custom Shader for Morphing and Soft Particles
+    const material = new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uProgress: { value: 0 }, // 0 = Chain, 1 = Wall
+            uColor1: { value: new THREE.Color(0xffffff) },
+            uColor2: { value: new THREE.Color(0x00D8FF) } // Cyan/Blue for the wall
+        },
+        vertexShader: `
+            uniform float uTime;
+            uniform float uProgress;
+            attribute vec3 aChainPos;
+            attribute vec3 aWallPos;
+            attribute vec3 aRandomOffset;
+            attribute float aSize;
+            
+            varying float vSize;
+            varying float vProgress;
+            
+            void main() {
+                vProgress = uProgress;
+                
+                // Morphing positions
+                vec3 targetPos = mix(aChainPos, aWallPos, uProgress);
+                
+                // Floating organic effect
+                float floatX = sin(uTime * 0.4 + aRandomOffset.x) * 0.6;
+                float floatY = cos(uTime * 0.3 + aRandomOffset.y) * 0.6;
+                float floatZ = sin(uTime * 0.5 + aRandomOffset.z) * 0.6;
+                
+                vec3 finalPos = targetPos + vec3(floatX, floatY, floatZ);
+                
+                vec4 mvPosition = modelViewMatrix * vec4(finalPos, 1.0);
+                gl_Position = projectionMatrix * mvPosition;
+                
+                // Scale particles based on distance
+                gl_PointSize = (aSize * 6.0 + 1.0) * (20.0 / -mvPosition.z);
+                vSize = aSize;
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 uColor1;
+            uniform vec3 uColor2;
+            varying float vSize;
+            varying float vProgress;
+            
+            void main() {
+                // Create soft circular particles
+                float dist = length(gl_PointCoord - vec2(0.5));
+                if (dist > 0.5) discard;
+                
+                float alpha = (0.5 - dist) * 2.0 * (vSize * 0.6 + 0.1);
+                
+                // Blend colors based on morph progress
+                vec3 color = mix(uColor1, uColor2, vProgress);
+                
+                gl_FragColor = vec4(color, alpha);
+            }
+        `,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
     });
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+
+    const particles = new THREE.Points(geometry, material);
     scene.add(particles);
 
-    // Animation logic
-    const animate = () => {
-        cube.rotation.y += 0.005;
-        cube.rotation.x += 0.002;
-        core.rotation.y -= 0.01;
+    // --- Background Ambient Atmosphere Particles ---
+    const atmosGeo = new THREE.BufferGeometry();
+    const atmosCount = 600;
+    const atmosPos = new Float32Array(atmosCount * 3);
+    for(let i=0; i<atmosCount*3; i++) {
+        atmosPos[i] = (Math.random() - 0.5) * 40;
+    }
+    atmosGeo.setAttribute('position', new THREE.BufferAttribute(atmosPos, 3));
+    const atmosMat = new THREE.PointsMaterial({
+        size: 0.15,
+        color: 0x007AFF,
+        transparent: true,
+        opacity: 0.2,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const atmos = new THREE.Points(atmosGeo, atmosMat);
+    scene.add(atmos);
+
+    // --- Interactivity ---
+    let mouseX = 0;
+    let mouseY = 0;
+
+    document.addEventListener('mousemove', (event) => {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // Scroll Listener for Morphing
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        // Map 0 -> 800px scroll to 0 -> 1 progress
+        let progress = Math.min(Math.max(scrollTop / 800, 0), 1);
         
+        gsap.to(material.uniforms.uProgress, {
+            value: progress,
+            duration: 1.5,
+            ease: 'power2.out'
+        });
+    });
+
+    // --- Animation Loop ---
+    const clock = new THREE.Clock();
+
+    const animate = () => {
+        const elapsedTime = clock.getElapsedTime();
+        material.uniforms.uTime.value = elapsedTime;
+
+        // Subtle parallax movement based on mouse
+        particles.rotation.y += (mouseX * 0.2 - particles.rotation.y) * 0.05;
+        particles.rotation.x += (-mouseY * 0.2 - particles.rotation.x) * 0.05;
+        
+        // Continuous slow rotation
+        particles.rotation.y += 0.0005;
+
+        // Rotate ambient atmosphere slowly
+        atmos.rotation.y = elapsedTime * 0.02;
+        atmos.rotation.x = elapsedTime * 0.01;
+
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     };
@@ -77,6 +220,4 @@ export function initThree(canvasId) {
     });
 
     animate();
-
-    return { cube, core, camera, scene };
 }
