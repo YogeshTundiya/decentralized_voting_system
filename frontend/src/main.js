@@ -193,15 +193,4 @@ if (localStorage.getItem('token')) {
     connectBtn.innerText = 'Connected Portal';
 }
 
-// Subtle mouse parallax for background atmosphere
-document.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 20;
-    const y = (e.clientY / window.innerHeight - 0.5) * 20;
-    
-    gsap.to('.bg-atmosphere', {
-        x: x,
-        y: y,
-        duration: 2,
-        ease: 'power2.out'
-    });
-});
+
