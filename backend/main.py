@@ -6,7 +6,9 @@ import uvicorn
 import models, database, auth
 from eth_account import Account
 from eth_account.messages import encode_defunct
+from web3 import Web3
 import os
+import json
 
 app = FastAPI(title="Decentralized Voting System API")
 
@@ -25,6 +27,45 @@ models.Base.metadata.create_all(bind=database.engine)
 # Admin Private Key for signing voter authorizations
 ADMIN_PRIVATE_KEY = os.getenv("ADMIN_PRIVATE_KEY", "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80")
 VOTING_CONTRACT_ADDRESS = os.getenv("VOTING_CONTRACT_ADDRESS", "0x5FbDB2315678afecb367f032d93F642f64180aa3")
+RPC_URL = os.getenv("RPC_URL", "http://127.0.0.1:8545")
+
+# Initialize Web3
+w3 = Web3(Web3.HTTPProvider(RPC_URL))
+admin_account = Account.from_key(ADMIN_PRIVATE_KEY)
+
+# Minimal ABI for the functions we need
+VOTING_ABI = [
+    {
+        "inputs": [
+            {"internalType": "string", "name": "_username", "type": "string"},
+            {"internalType": "uint256", "name": "_candidateId", "type": "uint256"}
+        ],
+        "name": "adminCastVote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAllCandidates",
+        "outputs": [
+            {
+                "components": [
+                    {"internalType": "uint256", "name": "id", "type": "uint256"},
+                    {"internalType": "string", "name": "name", "type": "string"},
+                    {"internalType": "uint256", "name": "voteCount", "type": "uint256"}
+                ],
+                "internalType": "struct Voting.Candidate[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
+
+contract = w3.eth.contract(address=VOTING_CONTRACT_ADDRESS, abi=VOTING_ABI)
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
 def register(user: auth.UserCreate, db: Session = Depends(database.get_db)):
@@ -84,6 +125,59 @@ def authorize_vote(eth_address: str, candidate_id: int, current_user: models.Use
         "voter": current_user.username,
         "signature": "0x" + signed_message.signature.hex()
     }
+
+@app.get("/candidates")
+def get_candidates():
+    try:
+        candidates = contract.functions.getAllCandidates().call()
+        result = []
+        for c in candidates:
+            result.append({
+                "id": c[0],
+                "name": c[1],
+                "voteCount": c[2]
+            })
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/cast-gasless-vote")
+def cast_gasless_vote(candidate_id: int, current_user: models.User = Depends(auth.get_current_user), db: Session = Depends(database.get_db)):
+    # 1. Check if already voted in DB
+    if current_user.has_voted:
+        raise HTTPException(status_code=400, detail="You have already cast your vote.")
+
+    try:
+        # 2. Build transaction
+        nonce = w3.eth.get_transaction_count(admin_account.address)
+        
+        # 3. Call adminCastVote
+        tx = contract.functions.adminCastVote(
+            current_user.username, 
+            candidate_id
+        ).build_transaction({
+            'from': admin_account.address,
+            'gas': 2000000,
+            'gasPrice': w3.eth.gas_price,
+            'nonce': nonce,
+        })
+
+        # 4. Sign and Send
+        signed_tx = w3.eth.account.sign_transaction(tx, private_key=ADMIN_PRIVATE_KEY)
+        tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+        
+        # 5. Update DB
+        current_user.has_voted = True
+        current_user.voted_candidate_id = candidate_id
+        db.commit()
+
+        return {
+            "message": "Vote cast successfully!",
+            "tx_hash": tx_hash.hex()
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Blockchain Error: {str(e)}")
 
 @app.get("/me")
 def read_users_me(current_user: models.User = Depends(auth.get_current_user)):

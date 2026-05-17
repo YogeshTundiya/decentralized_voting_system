@@ -1,6 +1,9 @@
 import { ethers } from 'ethers';
 import Lenis from 'lenis';
 
+import { initThree } from './three-scene.js';
+initThree('#webgl-canvas');
+
 // Initialize Smooth Scroll
 const lenis = new Lenis();
 function raf(time) {
@@ -9,7 +12,7 @@ function raf(time) {
 }
 requestAnimationFrame(raf);
 
-const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = [
     "function addCandidate(string name) public",
     "function getAllCandidates() public view returns (tuple(uint id, string name, uint voteCount)[])",
@@ -75,6 +78,25 @@ document.getElementById('addCandidateForm').addEventListener('submit', async (e)
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('token');
     window.location.href = 'index.html';
+});
+
+// Election Status Toggle (Visual UI feature)
+let isElectionOpen = false;
+document.getElementById('toggleElection').addEventListener('click', (e) => {
+    isElectionOpen = !isElectionOpen;
+    const statusPill = document.getElementById('currentStatus');
+    
+    if (isElectionOpen) {
+        statusPill.innerHTML = '<span class="pulse-dot" style="background:#34C759;box-shadow:0 0 10px #34C759"></span> Live';
+        statusPill.style.color = '#34C759';
+        statusPill.style.borderColor = 'rgba(52, 199, 89, 0.3)';
+        e.target.innerText = 'Close Election';
+    } else {
+        statusPill.innerHTML = '<span class="pulse-dot" style="background:#FF3B30;box-shadow:0 0 10px #FF3B30"></span> Closed';
+        statusPill.style.color = '#FF3B30';
+        statusPill.style.borderColor = 'rgba(255, 59, 48, 0.3)';
+        e.target.innerText = 'Open Election';
+    }
 });
 
 init();

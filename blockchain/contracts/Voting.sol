@@ -16,6 +16,7 @@ contract Voting {
     address public owner;
     mapping(uint => Candidate) public candidates;
     mapping(address => Voter) public voters;
+    mapping(string => Voter) public votersByUsername;
     uint public candidatesCount;
 
     event Voted(uint indexed candidateId, address indexed voter, bool isUpdate);
@@ -53,6 +54,23 @@ contract Voting {
 
         voters[msg.sender].hasVoted = true;
         voters[msg.sender].votedCandidateId = _candidateId;
+        candidates[_candidateId].voteCount++;
+
+        emit Voted(_candidateId, msg.sender, isUpdate);
+    }
+
+    function adminCastVote(string memory _username, uint _candidateId) public onlyOwner {
+        require(_candidateId > 0 && _candidateId <= candidatesCount, "Invalid candidate ID");
+        
+        bool isUpdate = false;
+        if (votersByUsername[_username].hasVoted) {
+            uint previousId = votersByUsername[_username].votedCandidateId;
+            candidates[previousId].voteCount--;
+            isUpdate = true;
+        }
+
+        votersByUsername[_username].hasVoted = true;
+        votersByUsername[_username].votedCandidateId = _candidateId;
         candidates[_candidateId].voteCount++;
 
         emit Voted(_candidateId, msg.sender, isUpdate);

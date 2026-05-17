@@ -7,3 +7,4 @@ passlib[bcrypt]
 python-multipart
 pydantic-settings
 eth-account
+web3

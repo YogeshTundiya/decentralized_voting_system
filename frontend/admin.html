@@ -9,53 +9,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./src/style.css">
 </head>
-<body class="admin-body">
-    <div class="bg-atmosphere"></div>
+<body class="dashboard-body">
+    <canvas id="webgl-canvas"></canvas>
 
     <nav class="nav-container">
         <div class="nav-brand">ADMIN.CENTER</div>
         <div class="nav-links">
             <a href="index.html" class="nav-item">View Site</a>
-            <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            <button id="logoutBtn" class="btn btn-secondary" style="border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; padding: 10px 20px; border-radius: 100px; font-size: 12px; cursor: pointer;">Logout</button>
         </div>
     </nav>
 
-    <main class="admin-container">
-        <header class="admin-header">
+    <main class="dashboard-container">
+        <header class="dashboard-header">
             <h1 class="heading-lg">Election Management</h1>
-            <p>Control the decentralized ledger and candidate registry.</p>
+            <p class="text-lead">Control the decentralized ledger and candidate registry.</p>
         </header>
 
-        <div class="admin-grid">
+        <div class="dashboard-grid">
             <!-- Add Candidate Section -->
-            <section class="admin-card glass-panel" style="padding: 40px; justify-content: flex-start;">
+            <section class="dashboard-card glass-panel">
                 <h2>Register Candidate</h2>
-                <form id="addCandidateForm" style="margin-top: 16px;">
+                <p>Register a new candidate onto the blockchain.</p>
+                <form id="addCandidateForm" style="margin-top: auto;">
                     <input type="text" id="candidateName" placeholder="Candidate Name" required>
-                    <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Add to Ledger</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Ledger</button>
                 </form>
             </section>
 
             <!-- Election Controls -->
-            <section class="admin-card glass-panel" style="padding: 40px; justify-content: flex-start;">
+            <section class="dashboard-card glass-panel">
                 <h2>Election Status</h2>
-                <div class="status-toggle" style="margin-top: 16px;">
-                    <span id="currentStatus" class="status-pill status-closed">Closed</span>
-                    <button id="toggleElection" class="btn btn-secondary">Open Election</button>
+                <p>Manage the global state of the election.</p>
+                <div class="status-toggle" style="margin-top: auto;">
+                    <span id="currentStatus" class="status-pill status-closed"><span class="pulse-dot" style="background:#FF3B30;box-shadow:0 0 10px #FF3B30"></span> Closed</span>
+                    <button id="toggleElection" class="btn btn-primary" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">Open Election</button>
                 </div>
             </section>
 
             <!-- Candidates List -->
-            <section class="admin-card glass-panel full-width" style="padding: 40px;">
+            <section class="dashboard-card glass-panel full-width">
                 <h2>Current Candidates</h2>
-                <div class="table-container" style="margin-top: 24px;">
+                <div class="table-container">
                     <table id="adminCandidatesTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Votes</th>
-                                <th>On-Chain Hash</th>
+                                <th>Candidate ID</th>
+                                <th>Candidate Name</th>
+                                <th>Vote Count</th>
+                                <th>On-Chain Tx Hash</th>
                             </tr>
                         </thead>
                         <tbody id="adminCandidatesList">

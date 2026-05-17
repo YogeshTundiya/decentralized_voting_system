@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Portal | ETH.VOTE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body class="dashboard-body">
+    <canvas id="webgl-canvas"></canvas>
+
+    <nav class="nav-container">
+        <div class="nav-brand">VOTER.PORTAL</div>
+        <div class="nav-links">
+            <button id="logoutBtn" class="btn btn-secondary" style="border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; padding: 10px 20px; border-radius: 100px; font-size: 12px; cursor: pointer;">Logout</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1 class="heading-lg">Active Ballot</h1>
+            <p class="text-lead">Review the candidates and cast your immutable vote on the Ethereum blockchain.</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <section class="dashboard-card glass-panel full-width">
+                <h2>Candidates</h2>
+                <div id="candidatesList" class="candidates-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 16px;">
+                    <!-- Dynamically populated from voter.js -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="./src/voter.js"></script>
+</body>
+</html>

@@ -11,3 +11,5 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     eth_address = Column(String(255), unique=True, nullable=True)
+    has_voted = Column(Boolean, default=False)
+    voted_candidate_id = Column(Integer, nullable=True)

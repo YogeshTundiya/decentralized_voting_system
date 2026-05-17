@@ -15,75 +15,91 @@
     <nav class="nav-container">
         <a href="#" class="nav-brand">ETH.VOTE</a>
         <div class="nav-links">
-            <a href="#philosophy" class="nav-item">Philosophy</a>
-            <a href="#technology" class="nav-item">Technology</a>
-            <button id="connectWallet" class="btn btn-primary">Connect Wallet</button>
+            <a href="#technology" class="nav-item">Protocol</a>
+            <button id="connectWallet" class="btn btn-primary">Access Portal</button>
         </div>
     </nav>
 
     <main data-scroll-container>
-        <section class="hero" id="home">
-            <div class="hero-content">
+        
+        <section class="split-section" id="home">
+            <div class="content-col">
                 <div class="hero-badge reveal-text">Decentralized Protocol</div>
                 <h1 class="heading-xl reveal-text">Immutable<br>Democracy.</h1>
                 <p class="text-lead hero-subtext">Every ballot is a block. Every count is a consensus. The future of secure voting is here, running purely on Ethereum.</p>
                 <div class="hero-actions">
                     <button class="btn btn-primary" onclick="document.getElementById('authModal').classList.add('active')">Get Started</button>
-                    <a href="#technology" class="btn-text">How it works →</a>
                 </div>
             </div>
+            <div class="content-col empty-col"></div> 
         </section>
 
-        <section class="stats">
-            <div class="stat-item glass-panel">
-                <span class="stat-num">0%</span>
-                <span class="stat-label">Fraud Rate</span>
-            </div>
-            <div class="stat-item glass-panel">
-                <span class="stat-num">100%</span>
-                <span class="stat-label">On-Chain Transparency</span>
-            </div>
-            <div class="stat-item glass-panel">
-                <span class="stat-num">∞</span>
-                <span class="stat-label">Trustless Consensus</span>
-            </div>
-        </section>
-
-        <section id="technology" class="info-section">
-            <div class="section-header">
-                <h2 class="heading-lg">The Protocol</h2>
-                <p>Designed to be untamperable and private.</p>
-            </div>
-            <div class="info-grid">
-                <div class="info-card glass-panel">
-                    <div class="icon">01</div>
-                    <h3>Biometric Auth</h3>
-                    <p>Secure login tied to your digital identity via the backend portal.</p>
+        <section class="advantages" id="advantages">
+            <div class="advantages-container">
+                <div class="advantage-card glass-panel reveal-text">
+                    <div class="advantage-icon">⛽</div>
+                    <h3>Gasless Voting</h3>
+                    <p>No MetaMask? No problem. Cast your ballot instantly. The protocol handles the gas costs for you.</p>
                 </div>
-                <div class="info-card glass-panel">
-                    <div class="icon">02</div>
-                    <h3>Crypto Signature</h3>
-                    <p>Each vote is cryptographically signed and verified by the Smart Contract.</p>
-                </div>
-                <div class="info-card glass-panel">
-                    <div class="icon">03</div>
+                <div class="advantage-card glass-panel reveal-text">
+                    <div class="advantage-icon">🔗</div>
                     <h3>Immutable Ledger</h3>
-                    <p>Once cast, your vote is etched into the Ethereum blockchain forever.</p>
+                    <p>Every vote is etched into the Ethereum blockchain. Once cast, it can never be deleted or altered.</p>
+                </div>
+                <div class="advantage-card glass-panel reveal-text">
+                    <div class="advantage-icon">👁️</div>
+                    <h3>Public Verification</h3>
+                    <p>Real-time transparency. Anyone can audit the tally directly on-chain at any time.</p>
                 </div>
             </div>
         </section>
 
-        <section id="voterPortal" class="info-section hidden">
-            <div class="section-header">
-                <h2 class="heading-lg">Cast Your Ballot</h2>
-                <p>Select your candidate and confirm on-chain.</p>
-            </div>
-            <div id="candidatesList" class="candidates-grid">
+        <section class="split-section" id="technology">
+            <div class="content-col empty-col"></div>
+            <div class="content-col text-right">
+                <div class="section-header">
+                    <h2 class="heading-lg">The Protocol</h2>
+                    <p>Designed to be untamperable and private.</p>
                 </div>
+                <div class="info-grid">
+                    <div class="info-card glass-panel">
+                        <div class="icon">01</div>
+                        <h3>Biometric Auth</h3>
+                        <p>Secure login tied to your digital identity via the backend portal.</p>
+                    </div>
+                    <div class="info-card glass-panel">
+                        <div class="icon">02</div>
+                        <h3>Crypto Signature</h3>
+                        <p>Each vote is cryptographically signed and verified by the Smart Contract.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <footer>
-            <p>&copy; 2026 ETH.VOTE Protocol. Decentralized Democracy.</p>
+
+        <footer class="glass-footer">
+            <div class="footer-content">
+                <div class="footer-brand-col">
+                    <h3 class="footer-logo">ETH.VOTE</h3>
+                    <p>Building the foundation for trustless, transparent digital democracy.</p>
+                </div>
+                <div class="footer-links-col">
+                    <h4>Resources</h4>
+                    <a href="#">Whitepaper</a>
+                    <a href="#">Smart Contract</a>
+                    <a href="#">GitHub Repo</a>
+                </div>
+                <div class="footer-links-col">
+                    <h4>Connect</h4>
+                    <a href="#">Twitter / X</a>
+                    <a href="#">Discord</a>
+                    <a href="#">Community Forum</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ETH.VOTE Protocol. All systems nominal.</p>
+                <div class="status-indicator"><span class="pulse-dot"></span> Mainnet Active</div>
+            </div>
         </footer>
     </main>
 
