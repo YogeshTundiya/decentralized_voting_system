@@ -6,81 +6,115 @@
     <title>ETH.VOTE | Immutable Democracy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./src/style.css">
 </head>
 <body>
+    <div class="grid-overlay"></div>
     <canvas id="webgl-canvas"></canvas>
 
-    <nav class="nav-container">
-        <a href="#" class="nav-brand">ETH.VOTE</a>
+    <nav class="nav-container glass-nav">
+        <a href="#" class="nav-brand">
+            <span class="brand-icon">⬡</span> ETH.VOTE
+        </a>
         <div class="nav-links">
+            <a href="#advantages" class="nav-item">Features</a>
             <a href="#technology" class="nav-item">Protocol</a>
-            <button id="connectWallet" class="btn btn-primary">Access Portal</button>
+            <button id="connectWallet" class="btn btn-glow">Access Portal</button>
         </div>
     </nav>
 
     <main data-scroll-container>
         
         <section class="split-section" id="home">
-            <div class="content-col">
-                <div class="hero-badge reveal-text">Decentralized Protocol</div>
-                <h1 class="heading-xl reveal-text">Immutable<br>Democracy.</h1>
-                <p class="text-lead hero-subtext">Every ballot is a block. Every count is a consensus. The future of secure voting is here, running purely on Ethereum.</p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary" onclick="document.getElementById('authModal').classList.add('active')">Get Started</button>
+            <div class="content-col hero-content">
+                <div class="hero-badge reveal-text">
+                    <span class="pulse-dot"></span>
+                    Decentralized Protocol v2.0
+                </div>
+                <h1 class="heading-xl reveal-text">
+                    <span class="text-gradient">Immutable</span><br>Democracy.
+                </h1>
+                <p class="text-lead hero-subtext reveal-text">
+                    Every ballot is a block. Every count is a consensus. The future of secure voting is here, running purely on Ethereum.
+                </p>
+                <div class="hero-actions reveal-text">
+                    <button class="btn btn-primary btn-large" onclick="document.getElementById('authModal').classList.add('active')">Launch App <span class="arrow">→</span></button>
+                    <a href="#technology" class="btn btn-secondary">Explore Protocol</a>
                 </div>
             </div>
             <div class="content-col empty-col"></div> 
         </section>
 
-        <section class="advantages" id="advantages">
-            <div class="advantages-container">
-                <div class="advantage-card glass-panel reveal-text">
-                    <div class="advantage-icon">⛽</div>
-                    <h3>Gasless Voting</h3>
-                    <p>No MetaMask? No problem. Cast your ballot instantly. The protocol handles the gas costs for you.</p>
+        <section class="split-section" id="advantages">
+            <div class="content-col empty-col"></div>
+            <div class="content-col text-left">
+                <div class="section-header reveal-text" style="margin-bottom: 30px;">
+                    <h2 class="heading-lg">Why ETH.VOTE?</h2>
+                    <p class="text-lead">Uncompromising security for the digital age.</p>
                 </div>
-                <div class="advantage-card glass-panel reveal-text">
-                    <div class="advantage-icon">🔗</div>
-                    <h3>Immutable Ledger</h3>
-                    <p>Every vote is etched into the Ethereum blockchain. Once cast, it can never be deleted or altered.</p>
-                </div>
-                <div class="advantage-card glass-panel reveal-text">
-                    <div class="advantage-icon">👁️</div>
-                    <h3>Public Verification</h3>
-                    <p>Real-time transparency. Anyone can audit the tally directly on-chain at any time.</p>
+                <div class="advantages-container vertical">
+                    <div class="advantage-card glass-panel">
+                        <div class="advantage-icon-wrapper">
+                            <div class="advantage-icon">⛽</div>
+                        </div>
+                        <div>
+                            <h3>Gasless Voting</h3>
+                            <p>No MetaMask? No problem. Cast your ballot instantly. The protocol handles the gas costs securely via meta-transactions.</p>
+                        </div>
+                    </div>
+                    <div class="advantage-card glass-panel">
+                        <div class="advantage-icon-wrapper">
+                            <div class="advantage-icon">🔗</div>
+                        </div>
+                        <div>
+                            <h3>Immutable Ledger</h3>
+                            <p>Every vote is cryptographically etched into the Ethereum blockchain. Once cast, it can never be deleted or altered.</p>
+                        </div>
+                    </div>
+                    <div class="advantage-card glass-panel">
+                        <div class="advantage-icon-wrapper">
+                            <div class="advantage-icon">👁️</div>
+                        </div>
+                        <div>
+                            <h3>Public Verification</h3>
+                            <p>Real-time transparency without sacrificing privacy. Anyone can audit the tally directly on-chain at any time.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="split-section" id="technology">
-            <div class="content-col empty-col"></div>
-            <div class="content-col text-right">
-                <div class="section-header">
-                    <h2 class="heading-lg">The Protocol</h2>
-                    <p>Designed to be untamperable and private.</p>
-                </div>
+        <section class="split-section align-center" id="technology">
+            <div class="content-col text-left tech-col">
+                <div class="hero-badge reveal-text">Security Architecture</div>
+                <h2 class="heading-xl reveal-text"><span class="text-gradient">Zero Trust.</span><br>Full Truth.</h2>
+                <p class="text-lead reveal-text">Designed to be untamperable and private from the ground up.</p>
+                
                 <div class="info-grid">
                     <div class="info-card glass-panel">
                         <div class="icon">01</div>
-                        <h3>Biometric Auth</h3>
-                        <p>Secure login tied to your digital identity via the backend portal.</p>
+                        <div>
+                            <h3>Biometric Auth</h3>
+                            <p>Secure login tied to your digital identity via the zero-knowledge portal.</p>
+                        </div>
                     </div>
                     <div class="info-card glass-panel">
                         <div class="icon">02</div>
-                        <h3>Crypto Signature</h3>
-                        <p>Each vote is cryptographically signed and verified by the Smart Contract.</p>
+                        <div>
+                            <h3>Crypto Signature</h3>
+                            <p>Each vote is cryptographically signed and verified by the Smart Contract.</p>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="content-col empty-col"></div>
         </section>
-
 
         <footer class="glass-footer">
             <div class="footer-content">
                 <div class="footer-brand-col">
-                    <h3 class="footer-logo">ETH.VOTE</h3>
+                    <h3 class="footer-logo"><span class="brand-icon">⬡</span> ETH.VOTE</h3>
                     <p>Building the foundation for trustless, transparent digital democracy.</p>
                 </div>
                 <div class="footer-links-col">
@@ -104,18 +138,30 @@
     </main>
 
     <div id="authModal" class="modal-overlay">
-        <div class="modal glass-panel">
+        <div class="modal glass-panel glass-modal">
             <div class="modal-header">
-                <h2 id="modalTitle">Voter Access</h2>
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon">🔐</div>
+                    <h2 id="modalTitle">Voter Access</h2>
+                </div>
                 <button id="closeModal" class="close-btn">&times;</button>
             </div>
             <form id="authForm">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="email" name="email" id="email" placeholder="Email" style="display: none;">
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%;">Access Portal</button>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter your identity" required>
+                </div>
+                <div class="input-group" id="emailGroup" style="display: none;">
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-large" style="width: 100%; margin-top: 10px;">Access Portal</button>
             </form>
-            <p id="toggleAuth" class="toggle-text">Don't have an account? <span>Register</span></p>
+            <p id="toggleAuth" class="toggle-text">Don't have an account? <span>Initialize Identity</span></p>
         </div>
     </div>
 

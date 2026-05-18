@@ -16,7 +16,8 @@ const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = [
     "function addCandidate(string name) public",
     "function getAllCandidates() public view returns (tuple(uint id, string name, uint voteCount)[])",
-    "function owner() public view returns (address)"
+    "function owner() public view returns (address)",
+    "event CandidateAdded(uint indexed candidateId, string name)"
 ];
 
 let provider, signer, contract;
@@ -29,6 +30,7 @@ async function init() {
 
     if (window.ethereum) {
         provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []); // explicitly request accounts
         signer = await provider.getSigner();
         contract = new ethers.Contract(contractAddress, contractABI, signer);
 
@@ -43,14 +45,24 @@ async function loadCandidates() {
         const candidates = await contract.getAllCandidates();
         const list = document.getElementById('adminCandidatesList');
         list.innerHTML = '';
+        
+        // Fetch candidate addition events to get the real transaction hash
+        const filter = contract.filters.CandidateAdded();
+        const events = await contract.queryFilter(filter);
+        const txHashes = {};
+        events.forEach(e => {
+            txHashes[e.args.candidateId] = e.transactionHash;
+        });
 
         candidates.forEach(c => {
+            const txHash = txHashes[c.id] || "0x0000000000000000000000000000000000000000";
+            const shortHash = txHash.slice(0, 10) + "...";
             const row = `
                 <tr>
                     <td>${c.id}</td>
                     <td>${c.name}</td>
                     <td>${c.voteCount}</td>
-                    <td>0x${Math.random().toString(16).slice(2, 10)}...</td>
+                    <td title="${txHash}">${shortHash}</td>
                 </tr>
             `;
             list.innerHTML += row;

@@ -73,6 +73,10 @@ def register(user: auth.UserCreate, db: Session = Depends(database.get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     
+    db_email = db.query(models.User).filter(models.User.email == user.email).first()
+    if db_email:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
     hashed_pwd = auth.get_password_hash(user.password)
     new_user = models.User(
         username=user.username, 

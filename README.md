@@ -105,6 +105,6 @@ const contractAddress = "0xYourNewContractAddress";
 
 ## 🦊 MetaMask Setup
 1. Install MetaMask.
-2. Connect to Local Network: `http://127.0.0.1:8545` (Chain ID: `31337`).
+2. Connect to Local Network: `http://127.0.0.1:8545` (Chain ID: `1337`).
 3. Import a test account using one of the private keys displayed in Terminal 1 (Hardhat node).
 

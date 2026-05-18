@@ -333,21 +333,21 @@ export function initThree(canvasId) {
     });
 
     window.addEventListener('scroll', () => {
+        const advantagesSection = document.getElementById('advantages');
         const techSection = document.getElementById('technology');
-        const portalSection = document.getElementById('voterPortal');
         
-        if (!techSection || !portalSection) return;
+        if (!advantagesSection || !techSection) return;
 
         const offset = window.innerHeight * 0.5;
         const scrollY = window.scrollY + offset;
+        const advTop = advantagesSection.offsetTop;
         const techTop = techSection.offsetTop;
-        const portalTop = portalSection.offsetTop;
 
         let progress = 0;
-        if (scrollY < techTop) {
-            progress = Math.max(0, scrollY / techTop);
-        } else if (scrollY < portalTop) {
-            progress = 1.0 + ((scrollY - techTop) / (portalTop - techTop));
+        if (scrollY < advTop) {
+            progress = Math.max(0, scrollY / advTop);
+        } else if (scrollY < techTop) {
+            progress = 1.0 + ((scrollY - advTop) / (techTop - advTop));
         } else {
             progress = 2.0;
         }

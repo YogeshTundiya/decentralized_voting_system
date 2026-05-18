@@ -72,7 +72,11 @@ authForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             if (isLogin) {
                 localStorage.setItem('token', data.access_token);
-                const decodedPayload = JSON.parse(atob(data.access_token.split('.')[1]));
+                // Safely decode Base64Url
+                const base64Url = data.access_token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const decodedPayload = JSON.parse(atob(base64));
+                
                 if (decodedPayload.is_admin) {
                     window.location.href = 'admin.html';
                     return;
@@ -88,14 +92,18 @@ authForm.addEventListener('submit', async (e) => {
             alert(data.detail || "Authentication Failed");
         }
     } catch (err) {
-        alert("Backend server offline.");
+        console.error(err);
+        alert("Login failed or backend server offline.");
     }
 });
 
 // --- Portal Logic ---
 connectBtn.addEventListener('click', () => {
     if (localStorage.getItem('token')) {
-        const decodedPayload = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
+        const base64Url = localStorage.getItem('token').split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const decodedPayload = JSON.parse(atob(base64));
+        
         if (decodedPayload.is_admin) {
             window.location.href = 'admin.html';
         } else {
